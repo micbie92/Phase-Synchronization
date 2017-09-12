@@ -1,20 +1,18 @@
 package phase.synchronization.main;
 
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.SparseMultigraph;
-import edu.uci.ics.jung.graph.util.EdgeType;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class Main extends Application {
 
@@ -41,13 +39,13 @@ public class Main extends Application {
         try {
             root = FXMLLoader.load(getClass().getClassLoader().getResource(path));
 
-
             ComboBox comboBox1 = new ComboBox();
-
 
             stage.setTitle("Phase Synchronization");
             stage.setScene(new Scene(root, 1366, 768));
+            setFullScreen(stage);
             stage.show();
+
         } catch (IOException e) {
             LOGGER.error("ERROR while loading fmxl configuration. ", e);
         } catch(Exception e) {
@@ -55,6 +53,15 @@ public class Main extends Application {
         }
     }
 
+    private void setFullScreen(Stage stage) {
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
+    }
 
 
 }

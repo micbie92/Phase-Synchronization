@@ -27,7 +27,7 @@ public class SimpleHiperGraph implements HiperGraphInterface {
     }
 
     private void addEdges(Graph<OscillatingVertex, String> graph, int edgeSize) {
-        graph.addEdge("Edge1", 1 ,3, EdgeType.DIRECTED);
+        graph.addEdge("Edge1", new OscillatingVertex(1) ,new OscillatingVertex(3), EdgeType.DIRECTED);
     }
 
     private void addVertexes(Graph<OscillatingVertex, String> graph, Collection<OscillatingVertex> vertexCollection) {

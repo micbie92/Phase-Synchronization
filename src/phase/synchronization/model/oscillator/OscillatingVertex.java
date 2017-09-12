@@ -7,13 +7,18 @@ package phase.synchronization.model.oscillator;
  */
 public class OscillatingVertex {
 
+    public Integer index;
+    public double phase;
+
     public OscillatingVertex(Integer index, double phase){
         this.index = index;
         this.phase = phase;
     }
 
-    public Integer index;
-    public double phase;
+    public OscillatingVertex(Integer index){
+        this.index = index;
+        this.phase = 0d;
+    }
 
     public int getIndex() {
         return index;
