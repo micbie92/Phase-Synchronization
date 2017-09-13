@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.SplitPane?>
@@ -9,7 +13,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane alignment="center" hgap="10" prefHeight="581.0" prefWidth="614.0" vgap="10" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="phase.synchronization.controllers.ButtonsController">
+<GridPane alignment="center" hgap="10" prefHeight="581.0" prefWidth="614.0" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="phase.synchronization.controllers.ButtonsController">
    <columnConstraints>
       <ColumnConstraints />
    </columnConstraints>
@@ -23,13 +27,23 @@
                <children>
                   <SplitPane dividerPositions="0.2868295994568907" layoutX="106.0" layoutY="117.0" prefHeight="554.0" prefWidth="612.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                      <AnchorPane id="ap1" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
                               <Button id="button1" layoutX="12.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#printOutput" prefHeight="26.0" prefWidth="69.0" text="Button" />
                               <ComboBox id="comboBox" fx:id="comboBox" layoutX="9.0" layoutY="55.0" prefHeight="26.0" prefWidth="149.0" />
                            </children>
                         </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+                      <AnchorPane id="ap2" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                           <children>
+                              <ScatterChart id="chart1" layoutX="11.0" layoutY="7.0" prefHeight="520.0" prefWidth="936.0" title="Phase chart">
+                                <xAxis>
+                                  <CategoryAxis autoRanging="false" gapStartAndEnd="false" prefHeight="19.0" prefWidth="881.0" side="BOTTOM" startMargin="0.0" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis forceZeroInRange="false" lowerBound="-180.0" side="LEFT" tickUnit="20.0" upperBound="180.0" />
+                                </yAxis>
+                              </ScatterChart>
+                           </children></AnchorPane>
                     </items>
                   </SplitPane>
                </children>
