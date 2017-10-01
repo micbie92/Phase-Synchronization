@@ -8,6 +8,7 @@ import phase.synchronization.model.oscillator.OscillatingVerticle;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 /**
@@ -29,17 +30,31 @@ public abstract class AbstractHiperGraph {
     protected abstract void initGraph(int initSize);
 
 
-    public void build(int steps, int newEdgesCount, int initSize){
+    public void build(int graphSize, int newEdgesCount, int initSize){
         initGraph(initSize);
-        IntStream.rangeClosed(1, steps).sequential()
+        LOGGER.info("Initialized graph: "+graph );
+        IntStream.rangeClosed(1, graphSize-initSize).sequential()
                 .forEach(i -> makeStep(newEdgesCount, i));
+        LOGGER.info("Final graph: "+graph );
+        addPhase();
+    }
 
+    private void addPhase() {
+        graph.getVertices().parallelStream()
+                .forEach(ov -> addPhaseToVerticle(ov));
+        LOGGER.info("Phase added");
+    }
+
+    private void addPhaseToVerticle(OscillatingVerticle ov) {
+        double phase = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
+        ov.setPhase(phase);
+        LOGGER.debug("Added phase: "+ov.getPhase()+" to verticle: "+ov);
     }
 
     private void makeStep(int newEdgesCount, int stepIndex) {
         OscillatingVerticle newVerticle = addNewVerticle();
+        LOGGER.debug("Making "+stepIndex+" step, for vericle: "+newVerticle.getId());
         addEdgesToNewVerticle(newVerticle, newEdgesCount, stepIndex);
-
     }
 
     private OscillatingVerticle addNewVerticle() {

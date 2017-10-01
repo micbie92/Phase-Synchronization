@@ -1,9 +1,5 @@
-package phase.synchronization.controllers;
+package phase.synchronization.controllers.panes;
 
-import edu.uci.ics.jung.algorithms.layout.CircleLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,43 +7,63 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import org.apache.log4j.Logger;
+import phase.synchronization.controllers.MainController;
 import phase.synchronization.model.hipergraph.AbstractHiperGraph;
 import phase.synchronization.model.hipergraph.BAHiperGraph;
+import phase.synchronization.utils.Constants;
 import phase.synchronization.utils.DisplayUtils;
 
-import javax.swing.*;
-import java.awt.*;
 import java.net.URL;
-import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class ButtonsController implements Initializable{
+public class LeftPaneController implements Initializable {
 
-    private static Logger LOGGER = Logger.getLogger(ButtonsController.class);
+    private static Logger LOGGER = Logger.getLogger(LeftPaneController.class);
+
+    private MainController main;
 
     @FXML
-    private ComboBox comboBox;
+    private ComboBox graphTypeField;
+
+    @FXML
+    private TextField graphSizeField;
+
+    @FXML
+    private TextField initGraphSizeField;
+
+    @FXML
+    private TextField edgesPerStepField;
 
     @FXML
     private void startSimulation()
     {
         LOGGER.debug("startSimulation button has been pressed");
-//        createCustomElement();
         AbstractHiperGraph graph = new BAHiperGraph();
-        graph.build(0, 2 , 4);
+        graph.build(Integer.parseInt(graphSizeField.getText()), Integer.parseInt(edgesPerStepField.getText()), Integer.parseInt(initGraphSizeField.getText()));
+        main.setGraph(graph);
         DisplayUtils.printGraph(graph.getGraph());
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        ObservableList<String> graphList = FXCollections.observableArrayList("Scale Free Hipregraph");
+        graphTypeField.getItems().addAll(graphList);
+        graphTypeField.getSelectionModel().selectFirst();
+
+        graphSizeField.setText(String.valueOf(Constants.DEFAULT_GRAPH_SIZE));
+        initGraphSizeField.setText(String.valueOf(Constants.DEFAULT_INIT_GRAPH_SIZE));
+        edgesPerStepField.setText(String.valueOf(Constants.DEFAULT_EDGES_PER_STEP));
+    }
 
     @FXML
     @Deprecated
     public void createCustomElement(){
-        Parent sp = comboBox.getParent().getParent();
+        Parent sp = graphTypeField.getParent().getParent();
 
 //        AnchorPane ap2 = (AnchorPane) sp. lookup("#ap2");
         AnchorPane ap1 = (AnchorPane) sp. lookup("#ap1");
@@ -59,12 +75,5 @@ public class ButtonsController implements Initializable{
         random = ThreadLocalRandom.current().nextDouble(0.0, 800.0);
         label.setLayoutX(random);
         ap1.getChildren().add(label);
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        ObservableList<String> graphList = FXCollections.observableArrayList("Scale Free Hipregraph");
-        comboBox.getItems().addAll(graphList);
-        comboBox.getSelectionModel().selectFirst();
     }
 }

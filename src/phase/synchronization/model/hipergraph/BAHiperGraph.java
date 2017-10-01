@@ -29,10 +29,11 @@ public class BAHiperGraph extends AbstractHiperGraph {
                 double neighborsCount =(double) graph.getNeighborCount(ov);
                 double propablity = neighborsCount/probablityDivider;
                 double random = Math.random();
-                LOGGER.debug("Random from add Edges: "+random+", propablity: "+propablity);
                 if(random<propablity){
                     createEdge(new Pair<>(ov, newVerticle));
                     edgesAdded++;
+                    LOGGER.debug("Edge added: V1: "+ov+", V2: "+newVerticle);
+                    break;
                 }
             }
         }
@@ -42,7 +43,6 @@ public class BAHiperGraph extends AbstractHiperGraph {
     protected void initGraph(int initSize) {
         createInitVerticles(initSize);
         createInitEdges();
-        LOGGER.info("Initialized graph: "+graph );
     }
 
     private void createInitEdges() {

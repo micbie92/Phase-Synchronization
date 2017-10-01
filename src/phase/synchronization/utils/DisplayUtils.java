@@ -39,7 +39,7 @@ public class DisplayUtils {
         vv.setPreferredSize(new Dimension((int) getScreenWidth() ,(int) getScreenHeight())); //Sets the viewing area size
 
         JFrame frame = new JFrame(graph.getClass().getSimpleName());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.getContentPane().add(vv);
         frame.pack();
         frame.setVisible(true);

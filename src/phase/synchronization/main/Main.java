@@ -38,12 +38,9 @@ public class Main extends Application {
         Parent root;
         try {
             root = FXMLLoader.load(getClass().getClassLoader().getResource(path));
-
-            ComboBox comboBox1 = new ComboBox();
-
             stage.setTitle("Phase Synchronization");
-            stage.setScene(new Scene(root, 1366, 768));
-            setFullScreen(stage);
+            Scene scene = setFullScreen(root);
+            stage.setScene(scene);
             stage.show();
 
         } catch (IOException e) {
@@ -53,14 +50,9 @@ public class Main extends Application {
         }
     }
 
-    private void setFullScreen(Stage stage) {
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
-
-        stage.setX(bounds.getMinX());
-        stage.setY(bounds.getMinY());
-        stage.setWidth(bounds.getWidth());
-        stage.setHeight(bounds.getHeight());
+    private Scene setFullScreen(Parent root) {
+        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        return new Scene(root, bounds.getMaxX(), bounds.getMaxY());
     }
 
 
