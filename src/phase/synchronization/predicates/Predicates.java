@@ -1,4 +1,4 @@
-package phase.synchronization;
+package phase.synchronization.predicates;
 
 import phase.synchronization.model.oscillator.OscillatingVerticle;
 
@@ -11,8 +11,4 @@ import java.util.function.Predicate;
  */
 public class Predicates {
 
-
-    public static Predicate<OscillatingVerticle> isNotNeightbur() {
-        return ov -> ov.;
-    }
 }

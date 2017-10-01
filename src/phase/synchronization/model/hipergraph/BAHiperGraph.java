@@ -1,6 +1,7 @@
 package phase.synchronization.model.hipergraph;
 
 import org.apache.log4j.Logger;
+import phase.synchronization.model.common.Pair;
 import phase.synchronization.model.oscillator.OscillatingVerticle;
 
 import java.util.Collection;
@@ -14,49 +15,45 @@ public class BAHiperGraph extends AbstractHiperGraph {
 
     private static Logger LOGGER = Logger.getLogger(BAHiperGraph.class);
 
+    public BAHiperGraph(){
+
+    }
+
     @Override
-    void initGraph(int initSize) {
+    protected void addEdgesToNewVerticle(OscillatingVerticle newVerticle, int newEdgesCount, int stepIndex) {
+        Collection<OscillatingVerticle> availabeVerticles = getAvailableVerticles(newVerticle);
+        int edgesAdded = 0;
+        int probablityDivider = 2*stepIndex*newEdgesCount;
+        while( edgesAdded < newEdgesCount){
+            for (OscillatingVerticle ov : availabeVerticles) {
+                double neighborsCount =(double) graph.getNeighborCount(ov);
+                double propablity = neighborsCount/probablityDivider;
+                double random = Math.random();
+                LOGGER.debug("Random from add Edges: "+random+", propablity: "+propablity);
+                if(random<propablity){
+                    createEdge(new Pair<>(ov, newVerticle));
+                    edgesAdded++;
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void initGraph(int initSize) {
         createInitVerticles(initSize);
-        createInitEdges(initSize-1);
+        createInitEdges();
+        LOGGER.info("Initialized graph: "+graph );
     }
 
-    private void createInitEdges(int edgesCount) {
+    private void createInitEdges() {
         graph.getVertices().stream()
-                .forEach(ov -> addInitEdges(edgesCount, ov));
+                .forEach(ov -> addInitEdges(ov));
     }
 
-    private void addInitEdges(int edgesCount, OscillatingVerticle ov) {
+    private void addInitEdges(OscillatingVerticle ov) {
         Collection<OscillatingVerticle> availableVertex = getAvailableVerticles(ov);
+        availableVertex.stream()
+                .forEach(o -> createEdge(new Pair(o, ov)));
+
     }
-
-
-
-
-//    private void addInitEdges(int edgeSize) {
-////        Resolve avilable vertex
-//        List<OscillatingVerticle> vertexs = getAvailableVertexs(4);
-//        edge = createEdge(vertexs);
-////        graph.addEdge("Edge1", EdgeType.DIRECTED);
-//    }
-
-//
-//    private void createEdge(List<OscillatingVerticle> vertexs) {
-//    }
-//
-//    //    FIXME: Przeniesc do Utils lub pomyśleć
-//    public List<OscillatingVerticle> getAvailableVertexs(int edgeSize){
-//        Collection<OscillatingVerticle> allVertex = graph.getVertices();
-//        List<OscillatingVerticle> vertexs = allVertex.parallelStream()
-//                .filter( Predicates.isAvailableVertex(edgeSize) )
-//                .limit(2)
-//                .collect( Collectors.toList() );
-//        return vertexs;
-//    }
-//
-//    private void addVertexes(Graph<OscillatingVerticle, String> graph, Collection<OscillatingVerticle> vertexCollection) {
-//        vertexCollection.parallelStream()
-//                .forEach(v -> graph.addVertex(v));
-//    }
-
-
 }

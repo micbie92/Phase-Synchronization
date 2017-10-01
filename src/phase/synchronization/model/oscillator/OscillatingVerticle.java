@@ -23,6 +23,11 @@ public class OscillatingVerticle {
         this.edgesCount = 0;
     }
 
+    @Override
+    public String toString(){
+        return "OV: "+id;
+    }
+
 
 
     public int getEdgesCount() {
