@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.ScatterChart?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="rightAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="530.0" prefWidth="936.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="main.phase.synchronization.controllers.panes.RightPaneController">
+    <children>
+        <ScatterChart id="chart1" fx:id="chart" layoutX="11.0" layoutY="7.0" prefHeight="520.0" prefWidth="936.0" title="Phase chart">
+            <xAxis>
+                <CategoryAxis autoRanging="true" gapStartAndEnd="false" prefHeight="19.0" prefWidth="881.0" side="BOTTOM" startMargin="0.0" />
+            </xAxis>
+            <yAxis>
+                <NumberAxis forceZeroInRange="false" lowerBound="-180.0" side="LEFT" tickUnit="20.0" upperBound="180.0" />
+            </yAxis>
+        </ScatterChart>
+    </children>
+</AnchorPane>
