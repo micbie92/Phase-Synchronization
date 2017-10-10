@@ -26,18 +26,8 @@ public class MainController implements Initializable{
     @FXML
     Parent rightPaneController;
 
-    private AbstractHiperGraph graph;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LOGGER.info("Main controller has been initialized!");
-    }
-
-    public AbstractHiperGraph getGraph() {
-        return graph;
-    }
-
-    public void setGraph(AbstractHiperGraph graph) {
-        this.graph = graph;
     }
 }

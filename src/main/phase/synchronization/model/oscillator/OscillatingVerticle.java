@@ -25,7 +25,7 @@ public class OscillatingVerticle {
 
     @Override
     public String toString(){
-        return "OV: "+id;
+        return "OV: "+id+" p:"+phase;
     }
 
 
@@ -38,7 +38,7 @@ public class OscillatingVerticle {
         this.edgesCount = edgesCount;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

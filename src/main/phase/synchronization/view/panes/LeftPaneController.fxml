@@ -6,7 +6,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="leftAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="532.0" prefWidth="239.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="main.phase.synchronization.controllers.panes.LeftPaneController">
+<AnchorPane id="leftAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="532.0" prefWidth="239.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.phase.synchronization.controllers.panes.LeftPaneController">
     <children>
         <Label layoutX="16.0" layoutY="17.0" text="Graph size:" />
         <Label layoutX="8.0" layoutY="70.0" text="Edges per step:" />
@@ -16,5 +16,7 @@
         <TextField id="edgesPerStepField" fx:id="edgesPerStepField" layoutX="120.0" layoutY="69.0" prefHeight="20.0" prefWidth="100.0" />
         <Button id="startSimulationButton" fx:id="startSimulationButton" layoutX="23.0" layoutY="149.0" mnemonicParsing="false" onMouseClicked="#startSimulation" prefHeight="26.0" prefWidth="191.0" text="Start simulation" />
         <ComboBox id="comboBox" fx:id="graphTypeField" layoutX="24.0" layoutY="110.0" prefHeight="26.0" prefWidth="191.0" />
+      <Button layoutX="28.0" layoutY="187.0" mnemonicParsing="false" onMouseClicked="#pauseSimulation" text="Pause" />
+      <Button layoutX="139.0" layoutY="187.0" mnemonicParsing="false" onMouseClicked="#resumeSimulation" text="Resume" />
     </children>
 </AnchorPane>

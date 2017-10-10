@@ -43,10 +43,10 @@ public class BAHiperGraph extends AbstractHiperGraph {
     @Override
     protected void initGraph(int initSize) {
         createInitVerticles(initSize);
-        createInitEdges();
+        createInitEdge();
     }
 
-    private void createInitEdges() {
+    private void createInitEdge() {
         graph.getVertices().stream()
                 .forEach(ov -> addInitEdges(ov));
     }

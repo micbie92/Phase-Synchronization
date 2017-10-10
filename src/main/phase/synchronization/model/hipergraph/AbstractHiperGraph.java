@@ -39,16 +39,28 @@ public abstract class AbstractHiperGraph {
         addPhase();
     }
 
+    public Collection<OscillatingVerticle> getVerticles(){
+        return this.graph.getVertices();
+    }
+
+    public OscillatingVerticle getVerticle(Integer id) throws Exception {
+        OscillatingVerticle toReturn = getVerticles().parallelStream()
+                .filter(ov -> ov.getId().equals(id))
+                .findAny()
+                .orElseThrow(() -> new Exception());
+        return toReturn;
+    }
+
     private void addPhase() {
         graph.getVertices().parallelStream()
                 .forEach(ov -> addPhaseToVerticle(ov));
-        LOGGER.info("Phase added");
+        LOGGER.info("Initial phase added");
     }
 
     private void addPhaseToVerticle(OscillatingVerticle ov) {
         double phase = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
         ov.setPhase(phase);
-        LOGGER.debug("Added phase: "+ov.getPhase()+" to verticle: "+ov);
+        LOGGER.debug("Initial phase added: "+ov.getPhase()+" to verticle: "+ov);
     }
 
     private void makeStep(int newEdgesCount, int stepIndex) {
@@ -93,7 +105,7 @@ public abstract class AbstractHiperGraph {
 
     @Override
     public String toString(){
-        return "\nGRAPH VERTICLES: \n"+ graph.getVertices() + "\n GRAPH EDGES: \n"+graph.getEdges();
+        return "\nGRAPH VERTICLES: \n"+ graph.getVertices() + "\n GRAPH EDGES SIZE: \n"+graph.getEdges().size();
     }
 
     public Graph<OscillatingVerticle, String> getGraph() {
