@@ -1,11 +1,11 @@
 package main.phase.synchronization.model.hipergraph;
 
-import main.phase.synchronization.model.common.Pair;
 import org.apache.log4j.Logger;
-import main.phase.synchronization.model.common.Pair;
-import main.phase.synchronization.model.oscillator.OscillatingVerticle;
+import main.phase.synchronization.model.verticle.OscillatingVertex;
 
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 /**
  * Created by Michał Bielecki on 21.08.17.
@@ -16,45 +16,38 @@ public class BAHiperGraph extends AbstractHiperGraph {
 
     private static Logger LOGGER = Logger.getLogger(BAHiperGraph.class);
 
-    public BAHiperGraph(){
+    public BAHiperGraph() {
 
     }
 
     @Override
-    protected void addEdgesToNewVerticle(OscillatingVerticle newVerticle, int newEdgesCount, int stepIndex) {
-        Collection<OscillatingVerticle> availabeVerticles = getAvailableVerticles(newVerticle);
-        int edgesAdded = 0;
-        int probablityDivider = 2*stepIndex*newEdgesCount;
-        while( edgesAdded < newEdgesCount){
-            for (OscillatingVerticle ov : availabeVerticles) {
-                double neighborsCount =(double) graph.getNeighborCount(ov);
-                double propablity = neighborsCount/probablityDivider;
+    protected void makeStep(int verticesPerStep, int edgeSize) {
+        Set<OscillatingVertex> availableVertices = getVertices();
+        Set<OscillatingVertex> newEdgeVertices = new HashSet<>();
+//        Adding new verticles
+        IntStream.rangeClosed(1, verticesPerStep)
+                .sequential()
+                .forEach(i -> newEdgeVertices.add(addNewVerticle()));
+//        Adding random verticles from graph
+        double probablityDivider = 2 * getStep() * verticesPerStep;
+        while (newEdgeVertices.size() < edgeSize) {
+            for (OscillatingVertex ov : availableVertices) {
+                double propablity = ov.getEdgeIds().size() / probablityDivider;
                 double random = Math.random();
-                if(random<propablity){
-                    createEdge(new Pair<>(ov, newVerticle));
-                    edgesAdded++;
-                    LOGGER.debug("Edge added: V1: "+ov+", V2: "+newVerticle);
+                LOGGER.debug("OV probablity: " + propablity + ", random: " + random);
+                if (random < propablity) {
+                    LOGGER.debug("OV added: " + propablity);
+                    newEdgeVertices.add(ov);
                     break;
                 }
             }
         }
+        addHiperEdge(newEdgeVertices);
     }
 
     @Override
     protected void initGraph(int initSize) {
         createInitVerticles(initSize);
-        createInitEdge();
-    }
-
-    private void createInitEdge() {
-        graph.getVertices().stream()
-                .forEach(ov -> addInitEdges(ov));
-    }
-
-    private void addInitEdges(OscillatingVerticle ov) {
-        Collection<OscillatingVerticle> availableVertex = getAvailableVerticles(ov);
-        availableVertex.stream()
-                .forEach(o -> createEdge(new Pair(o, ov)));
-
+        addHiperEdge(this.getVertices());
     }
 }

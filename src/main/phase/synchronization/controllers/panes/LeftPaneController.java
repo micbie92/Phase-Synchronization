@@ -11,7 +11,6 @@ import main.phase.synchronization.controllers.MainController;
 import main.phase.synchronization.engine.SimulationProcess;
 import main.phase.synchronization.model.hipergraph.AbstractHiperGraph;
 import main.phase.synchronization.model.hipergraph.BAHiperGraph;
-import main.phase.synchronization.utils.DisplayUtils;
 import org.apache.log4j.Logger;
 
 import java.net.URL;
@@ -33,7 +32,7 @@ public class LeftPaneController implements Initializable {
     private TextField initGraphSizeField;
 
     @FXML
-    private TextField edgesPerStepField;
+    private TextField verticesPerStepField;
 
     @FXML
     private void startSimulation() {
@@ -41,9 +40,8 @@ public class LeftPaneController implements Initializable {
         Thread queryThread = new Thread(){
             public void run(){
                 AbstractHiperGraph graph = new BAHiperGraph();
-                graph.build(Integer.parseInt(graphSizeField.getText()), Integer.parseInt(edgesPerStepField.getText()), Integer.parseInt(initGraphSizeField.getText()));
+                graph.build(Integer.parseInt(graphSizeField.getText()), Integer.parseInt(verticesPerStepField.getText()), Integer.parseInt(initGraphSizeField.getText()));
 //        main.setGraph(graph);
-                DisplayUtils.printGraph(graph.getGraph());
                 SimulationProcess sim = SimulationProcess.getInstance();
                 sim.setGraph(graph);
                 LOGGER.info("Starting simulation...");
@@ -68,13 +66,6 @@ public class LeftPaneController implements Initializable {
         LOGGER.info("Resume button clicked");
         SimulationProcess sim = SimulationProcess.getInstance();
         sim.setPause(false);
-        LOGGER.info("RESUMED GRAPH "+sim.getGraph().getGraph().getVertices().size());
-//        Thread queryThread = new Thread() {
-//            public void run() {
-//                sim.run();
-//            }
-//        };
-//        queryThread.start();
     }
 
     @Override
@@ -85,6 +76,6 @@ public class LeftPaneController implements Initializable {
 
         graphSizeField.setText(String.valueOf(CommonConstants.DEFAULT_GRAPH_SIZE));
         initGraphSizeField.setText(String.valueOf(CommonConstants.DEFAULT_INIT_GRAPH_SIZE));
-        edgesPerStepField.setText(String.valueOf(CommonConstants.DEFAULT_EDGES_PER_STEP));
+        verticesPerStepField.setText(String.valueOf(CommonConstants.DEFAULT_EDGES_PER_STEP));
     }
 }

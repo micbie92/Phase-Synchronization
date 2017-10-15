@@ -1,9 +1,5 @@
 package main.phase.synchronization.predicates;
 
-import main.phase.synchronization.model.oscillator.OscillatingVerticle;
-
-import java.util.function.Predicate;
-
 /**
  * Created by Michał Bielecki on 21.09.17.
  * Faculty of Physics

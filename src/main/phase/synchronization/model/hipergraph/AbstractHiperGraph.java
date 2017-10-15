@@ -1,14 +1,11 @@
 package main.phase.synchronization.model.hipergraph;
 
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.SparseMultigraph;
-import main.phase.synchronization.model.common.Pair;
+import main.phase.synchronization.model.edge.HiperEdge;
+import main.phase.synchronization.model.verticle.OscillatingVertex;
 import org.apache.log4j.Logger;
-import main.phase.synchronization.model.common.Pair;
-import main.phase.synchronization.model.oscillator.OscillatingVerticle;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
@@ -17,98 +14,94 @@ import java.util.stream.IntStream;
  * Faculty of Physics
  * Warsaw University of Technology
  */
-public abstract class AbstractHiperGraph {
+public abstract class AbstractHiperGraph{
 
     private static Logger LOGGER = Logger.getLogger(AbstractHiperGraph.class);
 
-    private final static String EDGE_NAME = "Edge ";
+    private int step = 1;
+    private Set<OscillatingVertex> vertices = new HashSet<>();
+    private Set<HiperEdge> hiperEdges = new HashSet<>();
 
-    protected Graph<OscillatingVerticle, String> graph = new SparseMultigraph<>();
-
-    protected abstract void addEdgesToNewVerticle(OscillatingVerticle newVerticle, int newEdgesCount, int stepIndex);
+    protected abstract void makeStep(int verticesPerStep, int edgeSize);
 
     protected abstract void initGraph(int initSize);
 
-
-    public void build(int graphSize, int newEdgesCount, int initSize){
+    public void build(int graphSize, int verticesPerStep, int initSize){
         initGraph(initSize);
-        LOGGER.info("Initialized graph: "+graph );
-        IntStream.rangeClosed(1, graphSize-initSize).sequential()
-                .forEach(i -> makeStep(newEdgesCount, i));
-        LOGGER.info("Final graph: "+graph );
-        addPhase();
+        LOGGER.info("Initialized graph: "+this );
+        while(vertices.size()<graphSize){
+            this.makeAbstractStep(verticesPerStep, initSize);
+        }
+        LOGGER.info("Final graph: "+this );
+        addInitPhase();
     }
 
-    public Collection<OscillatingVerticle> getVerticles(){
-        return this.graph.getVertices();
+    private void makeAbstractStep(int verticesPerStep, int edgeSize) {
+        LOGGER.debug("Making "+step+" step.");
+        makeStep(verticesPerStep, edgeSize);
+        step++;
     }
 
-    public OscillatingVerticle getVerticle(Integer id) throws Exception {
-        OscillatingVerticle toReturn = getVerticles().parallelStream()
+    public OscillatingVertex getVerticle(Integer id) {
+        OscillatingVertex toReturn = getVertices().parallelStream()
                 .filter(ov -> ov.getId().equals(id))
                 .findAny()
-                .orElseThrow(() -> new Exception());
+                .orElse(null);
         return toReturn;
     }
 
-    private void addPhase() {
-        graph.getVertices().parallelStream()
-                .forEach(ov -> addPhaseToVerticle(ov));
+    private void addInitPhase() {
+        vertices.parallelStream()
+                .forEach(ov -> addPhaseToVertice(ov));
         LOGGER.info("Initial phase added");
     }
 
-    private void addPhaseToVerticle(OscillatingVerticle ov) {
+    private void addPhaseToVertice(OscillatingVertex ov) {
         double phase = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
         ov.setPhase(phase);
         LOGGER.debug("Initial phase added: "+ov.getPhase()+" to verticle: "+ov);
     }
 
-    private void makeStep(int newEdgesCount, int stepIndex) {
-        OscillatingVerticle newVerticle = addNewVerticle();
-        LOGGER.debug("Making "+stepIndex+" step, for vericle: "+newVerticle.getId());
-        addEdgesToNewVerticle(newVerticle, newEdgesCount, stepIndex);
-    }
-
-    private OscillatingVerticle addNewVerticle() {
-        OscillatingVerticle newVericle = new OscillatingVerticle(graph.getVertexCount()+1);
-        graph.addVertex(newVericle);
+    protected OscillatingVertex addNewVerticle() {
+        OscillatingVertex newVericle = new OscillatingVertex(vertices.size()+1);
+        addVertex(newVericle);
         return newVericle;
     }
 
-//    Method is used to filter init verticles. Return only verticles that are not neightbur of parameter vertex
-    public Collection<OscillatingVerticle> getAvailableVerticles(OscillatingVerticle oscilatingVerticle) {
-        Collection<OscillatingVerticle> verticles = graph.getVertices();
-        ArrayList<OscillatingVerticle> list = new ArrayList<OscillatingVerticle>();
-
-        for (OscillatingVerticle ov: verticles) {
-            if(!ov.equals(oscilatingVerticle) && !areNeighbors(ov, oscilatingVerticle)){
-                list.add(ov);
-            }
-        }
-        return list;
+    protected void addHiperEdge(Set<OscillatingVertex> verticles){
+        int edgeCount = hiperEdges.size();
+        HiperEdge he = new HiperEdge(edgeCount+1, verticles);
+        updateVerticles(verticles, he.getId());
+        hiperEdges.add(he);
+        LOGGER.info("New edge added: "+ he);
     }
 
-    public boolean areNeighbors(OscillatingVerticle ov, OscillatingVerticle oscilatingVerticle) {
-        Collection<OscillatingVerticle> neightbors = graph.getNeighbors(ov);
-        return neightbors.contains(oscilatingVerticle);
+    private void updateVerticles(Set<OscillatingVertex> verticles, int id) {
+        verticles.parallelStream()
+                .forEach(v -> v.addEdge(id));
     }
 
-    public void createEdge(Pair<OscillatingVerticle, OscillatingVerticle> pair){
-        int edgeCount = graph.getEdgeCount();
-        graph.addEdge(EDGE_NAME+String.valueOf(edgeCount+1), pair.getLeft(), pair.getRight());
-    }
-
-    public void createInitVerticles(int initSize){
+    protected void createInitVerticles(int initSize){
         IntStream.rangeClosed(1, initSize).sequential()
                 .forEach(i-> addNewVerticle());
     }
 
     @Override
     public String toString(){
-        return "\nGRAPH VERTICLES: \n"+ graph.getVertices() + "\n GRAPH EDGES SIZE: \n"+graph.getEdges().size();
+        return "\nGRAPH VERTICLES: \n"+ getVertices() + "\n GRAPH EDGES COUNT: \n"+ getHiperEdges().size();
     }
 
-    public Graph<OscillatingVerticle, String> getGraph() {
-        return graph;
+    public Set<HiperEdge> getHiperEdges() {
+        return hiperEdges;
+    }
+
+    public Set<OscillatingVertex> getVertices(){
+        return this.vertices;
+    }
+
+    public int getStep() { return step; }
+
+    private void addVertex(OscillatingVertex newVericle) {
+        vertices.add(newVericle);
     }
 }

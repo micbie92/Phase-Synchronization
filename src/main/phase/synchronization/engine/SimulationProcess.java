@@ -1,7 +1,7 @@
 package main.phase.synchronization.engine;
 
 import main.phase.synchronization.model.hipergraph.AbstractHiperGraph;
-import main.phase.synchronization.model.oscillator.OscillatingVerticle;
+import main.phase.synchronization.model.verticle.OscillatingVertex;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -46,7 +46,7 @@ public class SimulationProcess implements Runnable {
 
     private void makeStep(int step) {
         LOGGER.info("Making step: " + step);
-        Collection<OscillatingVerticle> verticles = graph.getVerticles();
+        Collection<OscillatingVertex> verticles = graph.getVertices();
         AbstractHiperGraph newGraph = graph;
         verticles.stream()
                 .forEach(ov -> calculateNewPhase(ov, newGraph));
@@ -54,13 +54,9 @@ public class SimulationProcess implements Runnable {
         LOGGER.debug("New graph: " + newGraph);
     }
 
-    private void calculateNewPhase(OscillatingVerticle ov, AbstractHiperGraph newGraph) {
+    private void calculateNewPhase(OscillatingVertex ov, AbstractHiperGraph newGraph) {
         double newPhase = ov.getPhase() + 1.0;
-        try {
-            newGraph.getVerticle(ov.getId()).setPhase(newPhase);
-        } catch (Exception e) {
-            LOGGER.error("Verticle " + ov.getId() + " not found. Exception:", e);
-        }
+        newGraph.getVerticle(ov.getId()).setPhase(newPhase);
     }
 
     public AbstractHiperGraph getGraph() {
