@@ -1,8 +1,10 @@
 package main.phase.synchronization.model.hipergraph;
 
+import main.phase.synchronization.model.verticle.Vertex;
 import org.apache.log4j.Logger;
 import main.phase.synchronization.model.verticle.OscillatingVertex;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -22,8 +24,8 @@ public class BAHiperGraph extends AbstractHiperGraph {
 
     @Override
     protected void makeStep(int verticesPerStep, int edgeSize) {
-        Set<OscillatingVertex> availableVertices = getVertices();
-        Set<OscillatingVertex> newEdgeVertices = new HashSet<>();
+        Set<Vertex> availableVertices = new HashSet<>(getVertices());
+        Set<Vertex> newEdgeVertices = new HashSet<>();
 //        Adding new verticles
         IntStream.rangeClosed(1, verticesPerStep)
                 .sequential()
@@ -31,14 +33,16 @@ public class BAHiperGraph extends AbstractHiperGraph {
 //        Adding random verticles from graph
         double probablityDivider = 2 * getStep() * verticesPerStep;
         while (newEdgeVertices.size() < edgeSize) {
-            for (OscillatingVertex ov : availableVertices) {
+            for (Vertex ov : availableVertices) {
+                if(newEdgeVertices.size() >= edgeSize){
+                    break;
+                }
                 double propablity = ov.getEdgeIds().size() / probablityDivider;
                 double random = Math.random();
-                LOGGER.debug("OV probablity: " + propablity + ", random: " + random);
+                LOGGER.debug("V"+ov.getId()+" prob: " + propablity + ", rand: " + random);
                 if (random < propablity) {
-                    LOGGER.debug("OV added: " + propablity);
+                    LOGGER.debug("Added: ");
                     newEdgeVertices.add(ov);
-                    break;
                 }
             }
         }
@@ -48,6 +52,6 @@ public class BAHiperGraph extends AbstractHiperGraph {
     @Override
     protected void initGraph(int initSize) {
         createInitVerticles(initSize);
-        addHiperEdge(this.getVertices());
+        addHiperEdge(new HashSet<>(getVertices()));
     }
 }

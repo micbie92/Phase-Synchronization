@@ -3,6 +3,8 @@ package main.phase.synchronization.controllers;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import main.phase.synchronization.controllers.panes.LeftPaneController;
+import main.phase.synchronization.controllers.panes.RightPaneController;
 import main.phase.synchronization.model.hipergraph.AbstractHiperGraph;
 import org.apache.log4j.Logger;
 

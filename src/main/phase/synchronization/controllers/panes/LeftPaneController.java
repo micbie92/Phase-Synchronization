@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import main.phase.synchronization.constants.CommonConstants;
@@ -16,11 +18,11 @@ import org.apache.log4j.Logger;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LeftPaneController implements Initializable {
+public class LeftPaneController extends Parent implements Initializable {
 
     private static Logger LOGGER = Logger.getLogger(LeftPaneController.class);
 
-    private MainController main;
+    public RightPaneController rpCtrl;
 
     @FXML
     private ComboBox graphTypeField;
@@ -41,7 +43,6 @@ public class LeftPaneController implements Initializable {
             public void run(){
                 AbstractHiperGraph graph = new BAHiperGraph();
                 graph.build(Integer.parseInt(graphSizeField.getText()), Integer.parseInt(verticesPerStepField.getText()), Integer.parseInt(initGraphSizeField.getText()));
-//        main.setGraph(graph);
                 SimulationProcess sim = SimulationProcess.getInstance();
                 sim.setGraph(graph);
                 LOGGER.info("Starting simulation...");
@@ -66,6 +67,15 @@ public class LeftPaneController implements Initializable {
         LOGGER.info("Resume button clicked");
         SimulationProcess sim = SimulationProcess.getInstance();
         sim.setPause(false);
+    }
+
+    @FXML
+    public void updateGraph() {
+        XYChart.Series series = new XYChart.Series();
+        series.getData().add(new XYChart.Data("3", 3));
+        series.getData().add(new XYChart.Data("2", 2));
+        series.getData().add(new XYChart.Data("1", 1));
+        rpCtrl.updateChart(series);
     }
 
     @Override

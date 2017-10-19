@@ -2,11 +2,11 @@ package main.phase.synchronization.model.hipergraph;
 
 import main.phase.synchronization.model.edge.HiperEdge;
 import main.phase.synchronization.model.verticle.OscillatingVertex;
+import main.phase.synchronization.model.verticle.Vertex;
 import org.apache.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
 
 /**
@@ -21,6 +21,7 @@ public abstract class AbstractHiperGraph{
     private int step = 1;
     private Set<OscillatingVertex> vertices = new HashSet<>();
     private Set<HiperEdge> hiperEdges = new HashSet<>();
+    private double orderParameter;
 
     protected abstract void makeStep(int verticesPerStep, int edgeSize);
 
@@ -42,8 +43,16 @@ public abstract class AbstractHiperGraph{
         step++;
     }
 
-    public OscillatingVertex getVerticle(Integer id) {
-        OscillatingVertex toReturn = getVertices().parallelStream()
+//    Wyniesc gdzieś to
+    public void calculateOrderParameter(){
+        double sum = vertices.stream()
+                .mapToDouble(v -> Math.exp(((OscillatingVertex)v).getPhase()))
+                .sum();
+        orderParameter = 1/vertices.size()*sum;
+    }
+
+    public Vertex getVerticle(Integer id) {
+        Vertex toReturn = getVertices().parallelStream()
                 .filter(ov -> ov.getId().equals(id))
                 .findAny()
                 .orElse(null);
@@ -57,18 +66,18 @@ public abstract class AbstractHiperGraph{
     }
 
     private void addPhaseToVertice(OscillatingVertex ov) {
-        double phase = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
-        ov.setPhase(phase);
+//        double phase = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
+        ov.setPhase(0.0);
         LOGGER.debug("Initial phase added: "+ov.getPhase()+" to verticle: "+ov);
     }
 
-    protected OscillatingVertex addNewVerticle() {
-        OscillatingVertex newVericle = new OscillatingVertex(vertices.size()+1);
+    protected Vertex addNewVerticle() {
+        OscillatingVertex newVericle = new OscillatingVertex();
         addVertex(newVericle);
         return newVericle;
     }
 
-    protected void addHiperEdge(Set<OscillatingVertex> verticles){
+    protected void addHiperEdge(Set<Vertex> verticles){
         int edgeCount = hiperEdges.size();
         HiperEdge he = new HiperEdge(edgeCount+1, verticles);
         updateVerticles(verticles, he.getId());
@@ -76,7 +85,7 @@ public abstract class AbstractHiperGraph{
         LOGGER.info("New edge added: "+ he);
     }
 
-    private void updateVerticles(Set<OscillatingVertex> verticles, int id) {
+    private void updateVerticles(Set<Vertex> verticles, int id) {
         verticles.parallelStream()
                 .forEach(v -> v.addEdge(id));
     }
@@ -88,7 +97,7 @@ public abstract class AbstractHiperGraph{
 
     @Override
     public String toString(){
-        return "\nGRAPH VERTICLES: \n"+ getVertices() + "\n GRAPH EDGES COUNT: \n"+ getHiperEdges().size();
+        return "GRAPH: "+getHiperEdges();
     }
 
     public Set<HiperEdge> getHiperEdges() {
@@ -98,6 +107,8 @@ public abstract class AbstractHiperGraph{
     public Set<OscillatingVertex> getVertices(){
         return this.vertices;
     }
+
+    public double getOrderParameter(){return this.orderParameter;};
 
     public int getStep() { return step; }
 

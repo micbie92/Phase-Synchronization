@@ -1,7 +1,12 @@
 package main.phase.synchronization.utils;
 
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
 import javafx.stage.Screen;
+import main.phase.synchronization.controllers.panes.RightPaneController;
+import main.phase.synchronization.model.hipergraph.AbstractHiperGraph;
 
 
 /**
