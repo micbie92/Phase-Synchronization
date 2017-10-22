@@ -57,15 +57,16 @@ public class LeftPaneController extends Parent implements Initializable {
     private void pauseSimulation() {
         LOGGER.info("Pause button clicked");
         SimulationProcess sim = SimulationProcess.getInstance();
+        sim.pause();
 //        sim.setPause(true);
-        Thread cT = ThreadUtils.getProcessThread();
-        if(Objects.nonNull(cT)){
-            try {
-                cT.wait();
-            } catch (InterruptedException e) {
-                LOGGER.error("Exception during pauseSimulation method: ", e);
-            }
-        }
+//        Thread cT = ThreadUtils.getProcessThread();
+//        if(Objects.nonNull(cT)){
+//            try {
+//                cT.wait();
+//            } catch (InterruptedException e) {
+//                LOGGER.error("Exception during pauseSimulation method: ", e);
+//            }
+//        }
     }
 
     @FXML
@@ -73,11 +74,12 @@ public class LeftPaneController extends Parent implements Initializable {
         LOGGER.info("Resume button clicked");
         SimulationProcess sim = SimulationProcess.getInstance();
 //        sim.setPause(false);
-        Thread cT = ThreadUtils.getProcessThread();
-        if(Objects.nonNull(cT)) {
-            cT.notify();
-        }
-        sim.run();
+        sim.resume();
+//        Thread cT = ThreadUtils.getProcessThread();
+//        if(Objects.nonNull(cT)) {
+//            cT.notify();
+//        }
+//        sim.run();
     }
 
     @Override

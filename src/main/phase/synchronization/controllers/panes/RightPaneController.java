@@ -55,6 +55,7 @@ public class RightPaneController implements Initializable{
     @FXML
     public void updateChart(){
         XYChart.Series<Double, Double> series = sp.createSeries();
+        sp.pause();
         Platform.runLater(
                 () -> {
                 LOGGER.info("UPDATE CHAR METHOD RUNNED");
@@ -62,13 +63,6 @@ public class RightPaneController implements Initializable{
                 chart.getData().addAll(series);
             }
         );
-        Thread cT = ThreadUtils.getProcessThread();
-        if(Objects.nonNull(cT)){
-            try {
-                cT.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        sp.resume();
     }
 }
