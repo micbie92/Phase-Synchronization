@@ -16,13 +16,12 @@ import main.phase.synchronization.model.hipergraph.BAHiperGraph;
 import org.apache.log4j.Logger;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class LeftPaneController extends Parent implements Initializable {
 
     private static Logger LOGGER = Logger.getLogger(LeftPaneController.class);
-
-    public RightPaneController rpCtrl;
 
     @FXML
     private ComboBox graphTypeField;
@@ -49,6 +48,7 @@ public class LeftPaneController extends Parent implements Initializable {
                 sim.run();
             }
         };
+        queryThread.setName("sThread");
         queryThread.start();
     }
 
@@ -56,26 +56,34 @@ public class LeftPaneController extends Parent implements Initializable {
     private void pauseSimulation() {
         LOGGER.info("Pause button clicked");
         SimulationProcess sim = SimulationProcess.getInstance();
-        sim.setPause(true);
-        LOGGER.info("Step: "+sim.getStep());
+//        sim.setPause(true);
+        Thread cT = getThreadByName("sThread");
+        if(Objects.nonNull(cT)){
+            try {
+                cT.wait();
+            } catch (InterruptedException e) {
+                LOGGER.error("Exception during pauseSimulation method: ", e);
+            }
+        }
+    }
 
-
+    public Thread getThreadByName(String threadName) {
+        for (Thread t : Thread.getAllStackTraces().keySet()) {
+            if (t.getName().equals(threadName)) return t;
+        }
+        return null;
     }
 
     @FXML
     private void resumeSimulation() {
         LOGGER.info("Resume button clicked");
         SimulationProcess sim = SimulationProcess.getInstance();
-        sim.setPause(false);
-    }
-
-    @FXML
-    public void updateGraph() {
-        XYChart.Series series = new XYChart.Series();
-        series.getData().add(new XYChart.Data("3", 3));
-        series.getData().add(new XYChart.Data("2", 2));
-        series.getData().add(new XYChart.Data("1", 1));
-        rpCtrl.updateChart(series);
+//        sim.setPause(false);
+        Thread cT = getThreadByName("sThread");
+        if(Objects.nonNull(cT)) {
+            cT.notify();
+        }
+        sim.run();
     }
 
     @Override

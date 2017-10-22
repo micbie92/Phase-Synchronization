@@ -1,23 +1,13 @@
 package main.phase.synchronization.engine;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.beans.Observable;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.chart.XYChart;
-import javafx.scene.layout.AnchorPane;
-import javafx.util.Pair;
-import main.phase.synchronization.controllers.panes.RightPaneController;
 import main.phase.synchronization.model.hipergraph.AbstractHiperGraph;
 import main.phase.synchronization.model.verticle.OscillatingVertex;
-import main.phase.synchronization.model.verticle.Vertex;
-import main.phase.synchronization.utils.DisplayUtils;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,51 +27,41 @@ public class SimulationProcess implements Runnable {
 
     private AbstractHiperGraph graph;
 
-    public ObservableList<Pair<DoubleProperty, DoubleProperty>> getGraphData() {
-        return graphData;
-    }
-
-    private ObservableList<Pair<DoubleProperty, DoubleProperty>> graphData = FXCollections.observableArrayList();
+    private IntegerProperty step = new SimpleIntegerProperty(1);
 
     private boolean pause = false;
 
-    private int step = 1;
-
     @Override
     public void run() {
-        while (true) {
-            try {
+        try {
+            while (true) {
                 if (!pause) {
                     Thread.sleep(100);
-                    makeStep(step);
-                    step++;
+                    makeStep();
+                    step.setValue(step.getValue() + 1);
                 } else {
                     LOGGER.debug("Pausing...");
                     Thread.sleep(1000);
 
                 }
-            } catch (InterruptedException e) {
-                LOGGER.error("Exception occured during simulation: ", e);
             }
+        } catch (InterruptedException e) {
+            LOGGER.error("Exception occured during simulation: ", e);
         }
     }
 
-    private void makeStep(int step) {
+    private void makeStep() {
         LOGGER.info("Making step: " + step);
-        DoubleProperty p1 = new SimpleDoubleProperty(step);
-        DoubleProperty p2 = new SimpleDoubleProperty(step+1);
-        graphData.add(new Pair<>(p1,p2));
         calculateNewPhase();
-        updateChart();
         LOGGER.debug("Graph: " + this.graph);
     }
 
-    private void updateChart(){
+    public XYChart.Series createSeries(){
         XYChart.Series series = new XYChart.Series();
-        series.getData().add(new XYChart.Data("3", 3));
-        series.getData().add(new XYChart.Data("2", 2));
-        series.getData().add(new XYChart.Data("1", 1));
-//        rpCtrl.updateChart(series);
+        series.getData().add(new XYChart.Data("3", 3*step.getValue()));
+        series.getData().add(new XYChart.Data("2", 2*step.getValue()));
+        series.getData().add(new XYChart.Data("1", 1*step.getValue()));
+        return series;
     }
 
     private void calculateNewPhase() {
@@ -116,7 +96,7 @@ public class SimulationProcess implements Runnable {
         return instance;
     }
 
-    public int getStep() {
+    public final IntegerProperty getStep() {
         return step;
     }
 }
