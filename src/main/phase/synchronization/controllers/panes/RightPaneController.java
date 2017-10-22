@@ -16,6 +16,7 @@ import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.util.Pair;
 import main.phase.synchronization.engine.SimulationProcess;
+import main.phase.synchronization.utils.ThreadUtils;
 import org.apache.log4j.Logger;
 
 import java.net.URL;
@@ -61,7 +62,7 @@ public class RightPaneController implements Initializable{
                 chart.getData().addAll(series);
             }
         );
-        Thread cT = getThreadByName("sThread");
+        Thread cT = ThreadUtils.getProcessThread();
         if(Objects.nonNull(cT)){
             try {
                 cT.wait();
@@ -69,12 +70,5 @@ public class RightPaneController implements Initializable{
                 e.printStackTrace();
             }
         }
-    }
-
-    public Thread getThreadByName(String threadName) {
-        for (Thread t : Thread.getAllStackTraces().keySet()) {
-            if (t.getName().equals(threadName)) return t;
-        }
-        return null;
     }
 }

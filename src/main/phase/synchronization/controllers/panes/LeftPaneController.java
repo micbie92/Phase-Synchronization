@@ -13,6 +13,7 @@ import main.phase.synchronization.controllers.MainController;
 import main.phase.synchronization.engine.SimulationProcess;
 import main.phase.synchronization.model.hipergraph.AbstractHiperGraph;
 import main.phase.synchronization.model.hipergraph.BAHiperGraph;
+import main.phase.synchronization.utils.ThreadUtils;
 import org.apache.log4j.Logger;
 
 import java.net.URL;
@@ -48,7 +49,7 @@ public class LeftPaneController extends Parent implements Initializable {
                 sim.run();
             }
         };
-        queryThread.setName("sThread");
+        queryThread.setName(ThreadUtils.PROCESS_NAME_THREAD);
         queryThread.start();
     }
 
@@ -57,7 +58,7 @@ public class LeftPaneController extends Parent implements Initializable {
         LOGGER.info("Pause button clicked");
         SimulationProcess sim = SimulationProcess.getInstance();
 //        sim.setPause(true);
-        Thread cT = getThreadByName("sThread");
+        Thread cT = ThreadUtils.getProcessThread();
         if(Objects.nonNull(cT)){
             try {
                 cT.wait();
@@ -67,19 +68,12 @@ public class LeftPaneController extends Parent implements Initializable {
         }
     }
 
-    public Thread getThreadByName(String threadName) {
-        for (Thread t : Thread.getAllStackTraces().keySet()) {
-            if (t.getName().equals(threadName)) return t;
-        }
-        return null;
-    }
-
     @FXML
     private void resumeSimulation() {
         LOGGER.info("Resume button clicked");
         SimulationProcess sim = SimulationProcess.getInstance();
 //        sim.setPause(false);
-        Thread cT = getThreadByName("sThread");
+        Thread cT = ThreadUtils.getProcessThread();
         if(Objects.nonNull(cT)) {
             cT.notify();
         }
