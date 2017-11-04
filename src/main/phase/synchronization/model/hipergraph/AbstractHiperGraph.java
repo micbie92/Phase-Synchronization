@@ -2,6 +2,7 @@ package main.phase.synchronization.model.hipergraph;
 
 import main.phase.synchronization.model.edge.HiperEdge;
 import main.phase.synchronization.model.verticle.OscillatingVertex;
+import main.phase.synchronization.model.verticle.RosselVertex;
 import main.phase.synchronization.model.verticle.Vertex;
 import org.apache.log4j.Logger;
 
@@ -14,12 +15,12 @@ import java.util.stream.IntStream;
  * Faculty of Physics
  * Warsaw University of Technology
  */
-public abstract class AbstractHiperGraph{
+public abstract class AbstractHiperGraph<T extends Vertex>{
 
     private static Logger LOGGER = Logger.getLogger(AbstractHiperGraph.class);
 
     private int step = 1;
-    private Set<OscillatingVertex> vertices = new HashSet<>();
+    private Set<T> vertices = new HashSet<>();
     private Set<HiperEdge> hiperEdges = new HashSet<>();
     private double orderParameter;
 
@@ -34,7 +35,7 @@ public abstract class AbstractHiperGraph{
             this.makeAbstractStep(verticesPerStep, initSize);
         }
         LOGGER.info("Final graph: "+this );
-        addInitPhase();
+        postInit();
     }
 
     private void makeAbstractStep(int verticesPerStep, int edgeSize) {
@@ -52,30 +53,25 @@ public abstract class AbstractHiperGraph{
     }
 
     public Vertex getVerticle(Integer id) {
-        Vertex toReturn = getVertices().parallelStream()
-                .filter(ov -> ov.getId().equals(id))
+        Vertex toReturn = vertices.parallelStream()
+                .filter(v -> v.getId().equals(id))
                 .findAny()
                 .orElse(null);
         return toReturn;
     }
 
-    private void addInitPhase() {
+    protected void postInit() {
         vertices.parallelStream()
-                .forEach(ov -> addPhaseToVertice(ov));
+                .forEach(v -> v.postInit());
         LOGGER.info("Initial phase added");
     }
 
-    private void addPhaseToVertice(OscillatingVertex ov) {
-//        double phase = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
-        ov.setPhase(0.0);
-        LOGGER.debug("Initial phase added: "+ov.getPhase()+" to verticle: "+ov);
-    }
-
-    protected Vertex addNewVerticle() {
-        OscillatingVertex newVericle = new OscillatingVertex();
-        addVertex(newVericle);
-        return newVericle;
-    }
+//    private void addPhaseToVertice(Vertex v) {
+////        double phase = ThreadLocalRandom.current().nextDouble(0.0, 360.0);
+//        RosselVertex rv = (RosselVertex) v;
+//        ov.setPhase(0.0);
+//        LOGGER.debug("Initial phase added: "+ov.getPhase()+" to verticle: "+ov);
+//    }
 
     protected void addHiperEdge(Set<Vertex> verticles){
         int edgeCount = hiperEdges.size();
@@ -95,6 +91,14 @@ public abstract class AbstractHiperGraph{
                 .forEach(i-> addNewVerticle());
     }
 
+    protected T addNewVerticle(){
+        T v = createVertex();
+        addVertex(v);
+        return v;
+    }
+
+    protected abstract T createVertex();
+
     @Override
     public String toString(){
         return "GRAPH: "+getHiperEdges();
@@ -104,7 +108,7 @@ public abstract class AbstractHiperGraph{
         return hiperEdges;
     }
 
-    public Set<OscillatingVertex> getVertices(){
+    public Set<T> getVertices(){
         return this.vertices;
     }
 
@@ -112,7 +116,7 @@ public abstract class AbstractHiperGraph{
 
     public int getStep() { return step; }
 
-    private void addVertex(OscillatingVertex newVericle) {
+    private void addVertex(T newVericle) {
         vertices.add(newVericle);
     }
 }

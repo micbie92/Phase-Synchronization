@@ -18,5 +18,6 @@
         <ComboBox id="comboBox" fx:id="graphTypeField" layoutX="24.0" layoutY="110.0" prefHeight="26.0" prefWidth="191.0" />
       <Button layoutX="28.0" layoutY="187.0" mnemonicParsing="false" onMouseClicked="#pauseSimulation" text="Pause" />
       <Button layoutX="139.0" layoutY="187.0" mnemonicParsing="false" onMouseClicked="#resumeSimulation" text="Resume" />
+      <Button layoutX="49.0" layoutY="227.0" mnemonicParsing="false" onMouseClicked="#resetSimulation" text="Reset" />
     </children>
 </AnchorPane>

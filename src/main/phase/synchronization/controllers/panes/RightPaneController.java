@@ -39,30 +39,29 @@ public class RightPaneController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        chart.setLegendVisible(false);
+        chart.setAnimated(false);
         sp.getStep().addListener(
                 (Observable i) -> {
+                    sp.pause();
                     updateChart();
                     LOGGER.debug("Data has been changed.");
                     LOGGER.debug("Step "+i);
+                    sp.resume();
                 }
         );
-        XYChart.Series series = new XYChart.Series();
-        series.getData().add(new XYChart.Data("5", 2));
-        series.getData().add(new XYChart.Data("1", 1));
-        chart.getData().add(series);
     }
 
     @FXML
     public void updateChart(){
         XYChart.Series<Double, Double> series = sp.createSeries();
-        sp.pause();
+//        Czy to jeszcze potrzebne?
         Platform.runLater(
                 () -> {
                 LOGGER.info("UPDATE CHAR METHOD RUNNED");
                 chart.getData().clear();
-                chart.getData().addAll(series);
+                chart.getData().add(series);
             }
         );
-        sp.resume();
     }
 }

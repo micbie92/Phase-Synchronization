@@ -2,9 +2,7 @@ package main.phase.synchronization.model.hipergraph;
 
 import main.phase.synchronization.model.verticle.Vertex;
 import org.apache.log4j.Logger;
-import main.phase.synchronization.model.verticle.OscillatingVertex;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -14,7 +12,7 @@ import java.util.stream.IntStream;
  * Faculty of Physics
  * Warsaw University of Technology
  */
-public class BAHiperGraph extends AbstractHiperGraph {
+public abstract class BAHiperGraph extends AbstractHiperGraph {
 
     private static Logger LOGGER = Logger.getLogger(BAHiperGraph.class);
 

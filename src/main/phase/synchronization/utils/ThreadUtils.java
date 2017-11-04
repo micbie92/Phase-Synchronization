@@ -2,8 +2,6 @@ package main.phase.synchronization.utils;
 
 import org.apache.log4j.Logger;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
 /**
  * Created by Michał Bielecki on 22.10.17.
  * Faculty of Physics

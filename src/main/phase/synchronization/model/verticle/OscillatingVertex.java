@@ -7,6 +7,7 @@ package main.phase.synchronization.model.verticle;
  */
 public class OscillatingVertex extends Vertex{
 
+//    Zmienić na naturalFrequencies (i liczyc phase per krok)
     private double phase;
 
     public OscillatingVertex(){

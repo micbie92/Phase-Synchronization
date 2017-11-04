@@ -9,10 +9,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Faculty of Physics
  * Warsaw University of Technology
  */
-public class Vertex {
+public class Vertex{
+
     private static final AtomicInteger count = new AtomicInteger(0);
     private final Integer id;
     private Collection<Integer> edgeIds = new HashSet<>();
+
+    public void postInit(){}
 
     public Vertex() {
         this.id=count.incrementAndGet();

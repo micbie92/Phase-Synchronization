@@ -24,6 +24,9 @@ public class LeftPaneController extends Parent implements Initializable {
 
     private static Logger LOGGER = Logger.getLogger(LeftPaneController.class);
 
+    private SimulationProcess sp = SimulationProcess.getInstance();
+
+
     @FXML
     private ComboBox graphTypeField;
 
@@ -43,10 +46,9 @@ public class LeftPaneController extends Parent implements Initializable {
             public void run(){
                 AbstractHiperGraph graph = new BAHiperGraph();
                 graph.build(Integer.parseInt(graphSizeField.getText()), Integer.parseInt(verticesPerStepField.getText()), Integer.parseInt(initGraphSizeField.getText()));
-                SimulationProcess sim = SimulationProcess.getInstance();
-                sim.setGraph(graph);
+                sp.setGraph(graph);
                 LOGGER.info("Starting simulation...");
-                sim.run();
+                sp.run();
             }
         };
         queryThread.setName(ThreadUtils.PROCESS_NAME_THREAD);
@@ -56,30 +58,23 @@ public class LeftPaneController extends Parent implements Initializable {
     @FXML
     private void pauseSimulation() {
         LOGGER.info("Pause button clicked");
-        SimulationProcess sim = SimulationProcess.getInstance();
-        sim.pause();
-//        sim.setPause(true);
-//        Thread cT = ThreadUtils.getProcessThread();
-//        if(Objects.nonNull(cT)){
-//            try {
-//                cT.wait();
-//            } catch (InterruptedException e) {
-//                LOGGER.error("Exception during pauseSimulation method: ", e);
-//            }
-//        }
+        sp.pause();
     }
 
     @FXML
     private void resumeSimulation() {
         LOGGER.info("Resume button clicked");
-        SimulationProcess sim = SimulationProcess.getInstance();
-//        sim.setPause(false);
-        sim.resume();
-//        Thread cT = ThreadUtils.getProcessThread();
-//        if(Objects.nonNull(cT)) {
-//            cT.notify();
-//        }
-//        sim.run();
+        sp.resume();
+    }
+
+    @FXML
+    private void resetSimulation() {
+        LOGGER.info("Reset button clicked");
+        sp.stop();
+        AbstractHiperGraph graph = new BAHiperGraph();
+        graph.build(Integer.parseInt(graphSizeField.getText()), Integer.parseInt(verticesPerStepField.getText()), Integer.parseInt(initGraphSizeField.getText()));
+        sp.setGraph(graph);
+        sp.resume();
     }
 
     @Override

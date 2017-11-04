@@ -10,10 +10,20 @@ public class RosselVertex extends OscillatingVertex {
     private double x;
     private double y;
 
+    public RosselVertex(){
+        super();
+    }
+
     public RosselVertex(double x, double y){
         super();
         this.x=x;
         this.y=y;
+    }
+
+    @Override
+    public void postInit(){
+        this.x = 0;
+        this.y = 0;
     }
 
     public double getX() {
